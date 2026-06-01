@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Java 学习笔记个人博客">
+    <title>Java 学习笔记 - 个人博客</title>
+    <style>
+        /* ========== CSS 变量：日间 / 夜间主题 ========== */
+        :root {
+            --bg: #f5f8fc;
+            --bg-card: #ffffff;
+            --bg-sidebar: #e8f0fe;
+            --text: #2c3e50;
+            --text-secondary: #5a6c7d;
+            --text-muted: #8a9bb0;
+            --border: #d6e4f0;
+            --accent: #4a90d9;
+            --accent-hover: #357abd;
+            --accent-light: #e8f0fe;
+            --code-bg: #f0f4f8;
+            --code-text: #2c3e50;
+            --code-keyword: #0033b3;
+            --code-string: #067d17;
+            --code-comment: #8c8c8c;
+            --code-number: #1750eb;
+            --code-type: #b37d00;
+            --code-annotation: #9c6400;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 8px;
+            --transition: 0.25s ease;
+            --font-main: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+            --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            --max-width: 1100px;
+        }
+
+        body.dark {
+            --bg: #1a1d23;
+            --bg-card: #242830;
+            --bg-sidebar: #1e2128;
+            --text: #d4d8e0;
+            --text-secondary: #a0a8b4;
+            --text-muted: #6b7280;
+            --border: #333840;
+            --accent: #5b9bd5;
+            --accent-hover: #7ab8f5;
+            --accent-light: #1e2a3a;
+            --code-bg: #1e2128;
+            --code-text: #d4d8e0;
+            --code-keyword: #7ab8f5;
+            --code-string: #6aab73;
+            --code-comment: #6b7280;
+            --code-number: #a9cce8;
+            --code-type: #e0b860;
+            --code-annotation: #d4a843;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ========== 全局重置 ========== */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.75;
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+
+        a:hover {
+            color: var(--accent-hover);
+        }
+
+        /* ========== 顶部导航栏 ========== */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            padding: 0 1.5rem;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(8px);
+        }
+
+        .topbar .logo {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        }
+
+        .topbar .logo:hover {
+            color: var(--accent-hover);
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+            color: var(--text-secondary);
+            background: var(--bg);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.4rem 0.6rem;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+        }
+
+        .menu-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* ========== 主体布局 ========== */
+        .layout {
+            display: flex;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            min-height: calc(100vh - 56px - 60px);
+        }
+
+        /* ========== 侧边栏 ========== */
+        .sidebar {
+            width: 300px;
+            flex-shrink: 0;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            transition: transform var(--transition), background var(--transition);
+            overflow-y: auto;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 90;
+        }
+
+        /* 个人信息卡片 */
+        .profile-card {
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 8px rgba(74, 144, 217, 0.25);
+        }
+
+        .profile-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .profile-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        /* 联系方式 */
+        .contact-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .contact-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-list .contact-icon {
+            font-size: 1rem;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        /* 时钟 */
+        .clock-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            text-align: center;
+        }
+
+        .clock-time {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: var(--font-mono);
+            letter-spacing: 0.5px;
+            word-break: break-all;
+        }
+
+        /* 日历 */
+        .calendar-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.75rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .calendar-nav {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+        }
+
+        .calendar-nav:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .calendar-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .calendar-toggle {
+            display: block;
+            width: 100%;
+            margin-top: 0.4rem;
+            padding: 0.3rem 0;
+            background: var(--accent-light);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            color: var(--accent);
+            transition: all var(--transition);
+            font-family: var(--font-main);
+        }
+
+        .calendar-toggle:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            gap: 2px;
+        }
+
+        .calendar-grid .day-header {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            padding: 0.25rem 0;
+            font-weight: 600;
+        }
+
+        .calendar-grid .day-header:nth-child(6),
+        .calendar-grid .day-header:nth-child(7) {
+            color: #e07060;
+        }
+
+        .calendar-grid .day-cell {
+            font-size: 0.78rem;
+            padding: 0.25rem 0;
+            border-radius: 4px;
+            cursor: default;
+            color: var(--text-secondary);
+            position: relative;
+            line-height: 1.2;
+        }
+
+        .calendar-grid .day-cell.today {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .calendar-grid .day-cell.empty {
+            cursor: default;
+        }
+
+        .calendar-grid .day-cell .lunar-text {
+            display: block;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            line-height: 1;
+            margin-top: 1px;
+        }
+
+        .calendar-grid .day-cell.today .lunar-text {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* ========== 主内容区 ========== */
+        .main-content {
+            flex: 1;
+            padding: 2rem 2rem 2rem 2.5rem;
+            min-width: 0;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        /* 笔记列表 */
+        .note-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .note-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all var(--transition);
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+
+        .note-item:hover {
+            box-shadow: var(--shadow-hover);
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .note-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .note-item:hover .note-title {
+            color: var(--accent-hover);
+        }
+
+        .note-date {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+
+        /* 笔记详情 */
+        .detail-page {
+            display: none;
+        }
+
+        .detail-page.active {
+            display: block;
+        }
+
+        .detail-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.4rem;
+        }
+
+        .detail-date {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: var(--accent-hover);
+        }
+
+        .detail-body {
+            color: var(--text-secondary);
+        }
+
+        .detail-body h3 {
+            font-size: 1.15rem;
+            color: var(--text);
+            margin: 1.5rem 0 0.6rem;
+            font-weight: 700;
+        }
+
+        .detail-body p {
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-body ul,
+        .detail-body ol {
+            margin: 0.5rem 0 0.75rem 1.5rem;
+        }
+
+        .detail-body li {
+            margin-bottom: 0.3rem;
+        }
+
+        /* 代码块 */
+        .code-block-wrapper {
+            position: relative;
+            margin: 1rem 0;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .code-block-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--border);
+            padding: 0.4rem 0.75rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .copy-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.2rem 0.6rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+            font-family: var(--font-main);
+        }
+
+        .copy-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .copy-btn.copied {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        body.dark .copy-btn.copied {
+            background: #1a3a2a;
+            border-color: #28a745;
+            color: #6aab73;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1.25rem;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+            line-height: 1.6;
+            tab-size: 4;
+            margin: 0;
+        }
+
+        pre code {
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        /* 语法高亮 */
+        .kw { color: var(--code-keyword); font-weight: 600; }
+        .str { color: var(--code-string); }
+        .cm { color: var(--code-comment); font-style: italic; }
+        .num { color: var(--code-number); }
+        .tp { color: var(--code-type); }
+        .an { color: var(--code-annotation); }
+
+        /* 首页隐藏 */
+        .home-page {
+            display: block;
+        }
+
+        .home-page.hidden {
+            display: none;
+        }
+
+        .detail-page {
+            display: none;
+        }
+
+        .detail-page.active {
+            display: block;
+        }
+
+        /* ========== 回到顶部按钮 ========== */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            box-shadow: 0 2px 10px rgba(74, 144, 217, 0.35);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all var(--transition);
+            z-index: 80;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background: var(--accent-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 16px rgba(74, 144, 217, 0.45);
+        }
+
+        /* ========== 页脚 ========== */
+        .footer {
+            text-align: center;
+            padding: 1rem 1.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        /* ========== 响应式设计 ========== */
+
+        /* 平板 (≤768px) */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 56px;
+                left: 0;
+                bottom: 0;
+                z-index: 95;
+                transform: translateX(-100%);
+                width: 280px;
+                box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .main-content {
+                padding: 1.25rem 1rem;
+            }
+
+            .page-title {
+                font-size: 1.35rem;
+            }
+
+            .note-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.35rem;
+            }
+
+            .note-date {
+                margin-left: 0;
+            }
+
+            .detail-title {
+                font-size: 1.25rem;
+            }
+
+            pre {
+                font-size: 0.78rem;
+                padding: 0.75rem;
+            }
+        }
+
+        /* 手机 (≤480px) */
+        @media (max-width: 480px) {
+            .topbar {
+                padding: 0 0.75rem;
+                height: 48px;
+            }
+
+            .topbar .logo {
+                font-size: 1rem;
+            }
+
+            .sidebar {
+                width: 260px;
+            }
+
+            .main-content {
+                padding: 1rem 0.75rem;
+            }
+
+            .page-title {
+                font-size: 1.2rem;
+            }
+
+            .note-title {
+                font-size: 0.92rem;
+            }
+
+            .detail-title {
+                font-size: 1.15rem;
+            }
+
+            .detail-body h3 {
+                font-size: 1.05rem;
+            }
+
+            .back-to-top {
+                bottom: 1rem;
+                right: 1rem;
+                width: 38px;
+                height: 38px;
+                font-size: 1.1rem;
+            }
+
+            .clock-time {
+                font-size: 0.9rem;
+            }
+
+            .avatar {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== 顶部导航栏 ========== -->
+    <header class="topbar" id="topbar">
+        <span class="logo" id="logoBtn" title="返回首页">☕ Java 学习笔记</span>
+        <div class="topbar-actions">
+            <button class="theme-toggle" id="themeToggle" title="切换昼夜模式" aria-label="切换昼夜模式">🌙</button>
+            <button class="menu-toggle" id="menuToggle" title="菜单" aria-label="打开侧边栏菜单">☰</button>
+        </div>
+    </header>
+
+    <!-- ========== 侧边栏遮罩（移动端） ========== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ========== 主体布局 ========== -->
+    <div class="layout">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <!-- 个人信息 -->
+            <div class="profile-card">
+                <img class="avatar" src="XiaoXi.jpg" alt="个人头像" loading="lazy">
+                <div class="profile-name">小希</div>
+                <div class="profile-desc">Java 学习者 · 博客作者</div>
+            </div>
+
+            <!-- 联系方式 -->
+            <ul class="contact-list">
+                <li><span class="contact-icon">📧</span> <span>邮箱：xiaoxi@example.com</span></li>
+                <li><span class="contact-icon">💬</span> <span>QQ：1234567890</span></li>
+                <li><span class="contact-icon">🐙</span> <span>GitHub：github.com/xiaoxi</span></li>
+            </ul>
+
+            <!-- 实时时钟 -->
+            <div class="clock-box">
+                <div class="clock-time" id="clockDisplay">加载中...</div>
+            </div>
+
+            <!-- 日历 -->
+            <div class="calendar-box" id="calendarBox">
+                <div class="calendar-header">
+                    <button class="calendar-nav" id="calPrev" title="上一月">◀</button>
+                    <span class="calendar-title" id="calTitle">2026年5月</span>
+                    <button class="calendar-nav" id="calNext" title="下一月">▶</button>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+                <button class="calendar-toggle" id="calendarToggle">切换为农历</button>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content" id="mainContent">
+            <!-- 首页：笔记列表 -->
+            <section class="home-page" id="homePage">
+                <h1 class="page-title">📖 Java 学习笔记</h1>
+                <ul class="note-list" id="noteList"></ul>
+            </section>
+
+            <!-- 详情页：动态填充 -->
+            <section class="detail-page" id="detailPage"></section>
+        </main>
+    </div>
+
+    <!-- ========== 页脚 ========== -->
+    <footer class="footer">
+        <p>&copy; 2026 Java 学习笔记 · 个人博客 · 仅供学习交流</p>
+    </footer>
+
+    <!-- ========== 回到顶部按钮 ========== -->
+    <button class="back-to-top" id="backToTop" title="回到顶部" aria-label="回到顶部">↑</button>
+
+    <script>
+        /* =================================================================
+         *  Java 学习笔记个人博客 - 全部交互逻辑
+         *  包含：博文数据、导航、时钟、日历（公历/农历）、昼夜切换、代码复制、回到顶部
+         * ================================================================= */
+
+        /* ========== 博文数据 ========== */
+        const blogPosts = [
+            {
+                id: 'hello-world',
+                title: 'Java 第一课：Hello World',
+                date: '2026-02-15',
+                content: `
+                    <h3>一、Java 简介</h3>
+                    <p>Java 是一门<strong>面向对象</strong>的编程语言，由 Sun Microsystems（现已被 Oracle 收购）于 1995 年发布。Java 具有<strong>跨平台</strong>特性——“一次编写，到处运行”（Write Once, Run Anywhere），这得益于 Java 虚拟机（JVM）的设计。</p>
+                    <p>Java 广泛应用于企业级开发、Android 应用开发、大数据处理等领域，是学习编程的绝佳入门语言之一。</p>
+                    <h3>二、环境准备</h3>
+                    <p>要运行 Java 程序，需要安装 <strong>JDK</strong>（Java Development Kit）。推荐使用 JDK 17 或更高版本的 LTS（长期支持）版本。</p>
+                    <ol>
+                        <li>下载并安装 JDK</li>
+                        <li>配置环境变量 <code>JAVA_HOME</code> 和 <code>PATH</code></li>
+                        <li>在命令行输入 <code>java -version</code> 验证安装是否成功</li>
+                    </ol>
+                    <h3>三、第一个 Java 程序</h3>
+                    <p>创建一个文件 <code>HelloWorld.java</code>，写入以下代码：</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>HelloWorld.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="cm">/**</span>
+<span class="cm"> * 第一个 Java 程序：Hello World</span>
+<span class="cm"> * 这是一个多行注释（文档注释）</span>
+<span class="cm"> */</span>
+<span class="kw">public class</span> <span class="tp">HelloWorld</span> {
+    <span class="cm">// main 方法是 Java 程序的入口点（单行注释）</span>
+    <span class="kw">public static void</span> <span class="tp">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">/* 向控制台输出一段文字（多行注释） */</span>
+        <span class="tp">System</span>.out.println(<span class="str">"Hello, World!"</span>);
+    }
+}</code></pre>
+                    </div>
+                    <h3>四、代码解析</h3>
+                    <ul>
+                        <li><strong>public class HelloWorld</strong>：定义一个公开的类，类名必须与文件名一致。</li>
+                        <li><strong>public static void main(String[] args)</strong>：程序的入口方法，JVM 从这里开始执行。</li>
+                        <li><strong>System.out.println()</strong>：向控制台输出内容并换行。</li>
+                    </ul>
+                    <h3>五、编译与运行</h3>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>终端命令</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="cm"># 编译 Java 源文件，生成 HelloWorld.class 字节码文件</span>
+javac HelloWorld.java
+
+<span class="cm"># 运行 Java 程序</span>
+java HelloWorld
+
+<span class="cm"># 输出结果：</span>
+<span class="str">Hello, World!</span></code></pre>
+                    </div>
+                `
+            },
+            {
+                id: 'enum-usecase',
+                title: '枚举类型的应用场景',
+                date: '2026-03-02',
+                content: `
+                    <h3>一、枚举类型概述</h3>
+                    <p>Java 枚举（<code>enum</code>）是一种特殊的类，用于定义<strong>一组固定的常量</strong>。它比使用 <code>public static final</code> 常量更安全、更易读。</p>
+                    <h3>二、场景一：状态 / 类型定义（最常用）</h3>
+                    <p>使用枚举定义订单状态、用户角色等固定类型，避免魔法数字和字符串。</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>OrderStatus.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="kw">public enum</span> <span class="tp">OrderStatus</span> {
+    <span class="an">PENDING</span>(<span class="str">"待支付"</span>),
+    <span class="an">PAID</span>(<span class="str">"已支付"</span>),
+    <span class="an">SHIPPED</span>(<span class="str">"已发货"</span>),
+    <span class="an">DELIVERED</span>(<span class="str">"已签收"</span>),
+    <span class="an">CANCELLED</span>(<span class="str">"已取消"</span>);
+
+    <span class="kw">private final</span> <span class="tp">String</span> description;
+
+    <span class="tp">OrderStatus</span>(<span class="tp">String</span> description) {
+        <span class="kw">this</span>.description = description;
+    }
+
+    <span class="kw">public</span> <span class="tp">String</span> <span class="tp">getDescription</span>() {
+        <span class="kw">return</span> description;
+    }
+}
+
+<span class="cm">// 使用示例</span>
+<span class="tp">OrderStatus</span> status = <span class="tp">OrderStatus</span>.<span class="an">PAID</span>;
+<span class="tp">System</span>.out.println(status.getDescription()); <span class="cm">// 输出：已支付</span></code></pre>
+                    </div>
+                    <h3>三、场景二：策略模式（替换大量 if-else）</h3>
+                    <p>当业务逻辑中存在大量 <code>if-else</code> 判断不同类型执行不同操作时，可以用枚举实现策略模式。</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>Calculator.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="kw">public enum</span> <span class="tp">Calculator</span> {
+    <span class="an">ADD</span> {
+        <span class="kw">public</span> <span class="kw">double</span> <span class="tp">apply</span>(<span class="kw">double</span> a, <span class="kw">double</span> b) { <span class="kw">return</span> a + b; }
+    },
+    <span class="an">SUBTRACT</span> {
+        <span class="kw">public</span> <span class="kw">double</span> <span class="tp">apply</span>(<span class="kw">double</span> a, <span class="kw">double</span> b) { <span class="kw">return</span> a - b; }
+    },
+    <span class="an">MULTIPLY</span> {
+        <span class="kw">public</span> <span class="kw">double</span> <span class="tp">apply</span>(<span class="kw">double</span> a, <span class="kw">double</span> b) { <span class="kw">return</span> a * b; }
+    },
+    <span class="an">DIVIDE</span> {
+        <span class="kw">public</span> <span class="kw">double</span> <span class="tp">apply</span>(<span class="kw">double</span> a, <span class="kw">double</span> b) {
+            <span class="kw">if</span> (b == <span class="num">0</span>) <span class="kw">throw new</span> <span class="tp">IllegalArgumentException</span>(<span class="str">"除数不能为0"</span>);
+            <span class="kw">return</span> a / b;
+        }
+    };
+
+    <span class="kw">public abstract double</span> <span class="tp">apply</span>(<span class="kw">double</span> a, <span class="kw">double</span> b);
+}
+
+<span class="cm">// 使用：无需 if-else，直接调用</span>
+<span class="kw">double</span> result = <span class="tp">Calculator</span>.<span class="an">ADD</span>.apply(<span class="num">10</span>, <span class="num">5</span>); <span class="cm">// 15.0</span></code></pre>
+                    </div>
+                    <h3>四、场景三：统一返回码（后端接口必备）</h3>
+                    <p>在后端开发中，使用枚举定义统一的响应状态码，确保接口返回格式规范一致。</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>ResultCode.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="kw">public enum</span> <span class="tp">ResultCode</span> {
+    <span class="an">SUCCESS</span>(<span class="num">200</span>, <span class="str">"操作成功"</span>),
+    <span class="an">BAD_REQUEST</span>(<span class="num">400</span>, <span class="str">"请求参数错误"</span>),
+    <span class="an">UNAUTHORIZED</span>(<span class="num">401</span>, <span class="str">"未授权"</span>),
+    <span class="an">FORBIDDEN</span>(<span class="num">403</span>, <span class="str">"禁止访问"</span>),
+    <span class="an">NOT_FOUND</span>(<span class="num">404</span>, <span class="str">"资源不存在"</span>),
+    <span class="an">SERVER_ERROR</span>(<span class="num">500</span>, <span class="str">"服务器内部错误"</span>);
+
+    <span class="kw">private final int</span> code;
+    <span class="kw">private final</span> <span class="tp">String</span> message;
+
+    <span class="tp">ResultCode</span>(<span class="kw">int</span> code, <span class="tp">String</span> message) {
+        <span class="kw">this</span>.code = code;
+        <span class="kw">this</span>.message = message;
+    }
+
+    <span class="kw">public int</span> <span class="tp">getCode</span>() { <span class="kw">return</span> code; }
+    <span class="kw">public</span> <span class="tp">String</span> <span class="tp">getMessage</span>() { <span class="kw">return</span> message; }
+}
+
+<span class="cm">// 接口返回示例</span>
+<span class="kw">public class</span> <span class="tp">ApiResponse</span>&lt;<span class="tp">T</span>&gt; {
+    <span class="kw">private int</span> code;
+    <span class="kw">private</span> <span class="tp">String</span> message;
+    <span class="kw">private</span> <span class="tp">T</span> data;
+
+    <span class="kw">public static</span> &lt;<span class="tp">T</span>&gt; <span class="tp">ApiResponse</span>&lt;<span class="tp">T</span>&gt; <span class="tp">success</span>(<span class="tp">T</span> data) {
+        <span class="kw">return new</span> <span class="tp">ApiResponse</span>&lt;&gt;(<span class="tp">ResultCode</span>.<span class="an">SUCCESS</span>, data);
+    }
+}</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: 'prime-numbers',
+                title: '如何快速找到素数',
+                date: '2026-03-18',
+                content: `
+                    <h3>一、什么是素数</h3>
+                    <p><strong>素数（质数）</strong>是指在大于 1 的自然数中，除了 1 和它本身以外不再有其他因数的数。例如：2、3、5、7、11、13 等。</p>
+                    <h3>二、基础方法：暴力枚举</h3>
+                    <p>最直接的方法是检查从 2 到 n-1 是否有因数，时间复杂度 O(n)。</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>基础判断</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="kw">public static boolean</span> <span class="tp">isPrime</span>(<span class="kw">int</span> n) {
+    <span class="kw">if</span> (n &lt;= <span class="num">1</span>) <span class="kw">return false</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">2</span>; i &lt; n; i++) {
+        <span class="kw">if</span> (n % i == <span class="num">0</span>) <span class="kw">return false</span>;
+    }
+    <span class="kw">return true</span>;
+}</code></pre>
+                    </div>
+                    <h3>三、优化一：只检查到 √n</h3>
+                    <p>如果 n 是合数，它一定有一个因子 ≤ √n。因此只需检查到 √n，时间复杂度降至 O(√n)。</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>优化：到 √n</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="kw">public static boolean</span> <span class="tp">isPrimeOptimized</span>(<span class="kw">int</span> n) {
+    <span class="kw">if</span> (n &lt;= <span class="num">1</span>) <span class="kw">return false</span>;
+    <span class="kw">if</span> (n == <span class="num">2</span>) <span class="kw">return true</span>;   <span class="cm">// 2 是唯一的偶素数</span>
+    <span class="kw">if</span> (n % <span class="num">2</span> == <span class="num">0</span>) <span class="kw">return false</span>; <span class="cm">// 排除偶数</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">3</span>; i * i &lt;= n; i += <span class="num">2</span>) {
+        <span class="kw">if</span> (n % i == <span class="num">0</span>) <span class="kw">return false</span>;
+    }
+    <span class="kw">return true</span>;
+}</code></pre>
+                    </div>
+                    <h3>四、批量查找：埃拉托色尼筛法</h3>
+                    <p>当需要找出 <strong>1 ~ N 范围内所有素数</strong>时，使用<strong>筛法</strong>效率最高，时间复杂度 O(N log log N)。</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>SieveOfEratosthenes.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="kw">public static</span> <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; <span class="tp">sieveOfEratosthenes</span>(<span class="kw">int</span> n) {
+    <span class="kw">boolean</span>[] isPrime = <span class="kw">new boolean</span>[n + <span class="num">1</span>];
+    <span class="tp">Arrays</span>.fill(isPrime, <span class="kw">true</span>);
+    isPrime[<span class="num">0</span>] = isPrime[<span class="num">1</span>] = <span class="kw">false</span>;
+
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">2</span>; i * i &lt;= n; i++) {
+        <span class="kw">if</span> (isPrime[i]) {
+            <span class="cm">// 将 i 的所有倍数标记为非素数</span>
+            <span class="kw">for</span> (<span class="kw">int</span> j = i * i; j &lt;= n; j += i) {
+                isPrime[j] = <span class="kw">false</span>;
+            }
+        }
+    }
+
+    <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; primes = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">2</span>; i &lt;= n; i++) {
+        <span class="kw">if</span> (isPrime[i]) primes.add(i);
+    }
+    <span class="kw">return</span> primes;
+}
+
+<span class="cm">// 测试：找出 100 以内的所有素数</span>
+<span class="tp">System</span>.out.println(<span class="tp">sieveOfEratosthenes</span>(<span class="num">100</span>));
+<span class="cm">// 输出：[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]</span></code></pre>
+                    </div>
+                `
+            },
+            {
+                id: 'reflection',
+                title: 'Java 的反射机制',
+                date: '2026-04-05',
+                content: `
+                    <h3>一、反射机制概述</h3>
+                    <p><strong>反射（Reflection）</strong>是 Java 提供的一种强大机制，允许程序在<strong>运行时</strong>动态地获取类的信息（构造方法、成员变量、成员方法等），并可以动态创建对象、调用方法。</p>
+                    <p>反射的核心入口是 <code>java.lang.Class</code> 类。</p>
+                    <h3>二、获取 Class 对象的三种方式</h3>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>获取 Class 对象</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="cm">// 方式一：通过类名.class</span>
+<span class="tp">Class</span>&lt;<span class="tp">String</span>&gt; clazz1 = <span class="tp">String</span>.<span class="kw">class</span>;
+
+<span class="cm">// 方式二：通过对象的 getClass() 方法</span>
+<span class="tp">String</span> str = <span class="str">"Hello"</span>;
+<span class="tp">Class</span>&lt;?&gt; clazz2 = str.getClass();
+
+<span class="cm">// 方式三：通过 Class.forName() 全限定类名（最常用）</span>
+<span class="tp">Class</span>&lt;?&gt; clazz3 = <span class="tp">Class</span>.forName(<span class="str">"java.lang.String"</span>);</code></pre>
+                    </div>
+                    <h3>三、获取构造方法并创建对象</h3>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>反射调用构造方法</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="cm">// 获取无参构造方法并创建对象</span>
+<span class="tp">Class</span>&lt;?&gt; clazz = <span class="tp">Class</span>.forName(<span class="str">"com.example.User"</span>);
+<span class="tp">Constructor</span>&lt;?&gt; constructor = clazz.getConstructor();
+<span class="tp">Object</span> obj = constructor.newInstance();
+
+<span class="cm">// 获取有参构造方法</span>
+<span class="tp">Constructor</span>&lt;?&gt; paramConstructor = clazz.getConstructor(<span class="tp">String</span>.<span class="kw">class</span>, <span class="kw">int</span>.<span class="kw">class</span>);
+<span class="tp">Object</span> obj2 = paramConstructor.newInstance(<span class="str">"张三"</span>, <span class="num">25</span>);</code></pre>
+                    </div>
+                    <h3>四、获取并调用成员方法</h3>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>反射调用方法</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="cm">// 获取 public 方法（包括继承的）</span>
+<span class="tp">Method</span> setNameMethod = clazz.getMethod(<span class="str">"setName"</span>, <span class="tp">String</span>.<span class="kw">class</span>);
+setNameMethod.invoke(obj, <span class="str">"李四"</span>);
+
+<span class="cm">// 获取私有方法（需要 setAccessible）</span>
+<span class="tp">Method</span> privateMethod = clazz.getDeclaredMethod(<span class="str">"secretMethod"</span>);
+privateMethod.setAccessible(<span class="kw">true</span>);  <span class="cm">// 暴力反射，绕过访问控制</span>
+privateMethod.invoke(obj);</code></pre>
+                    </div>
+                    <h3>五、获取并操作成员变量</h3>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>反射操作字段</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="cm">// 获取 public 字段</span>
+<span class="tp">Field</span> field = clazz.getField(<span class="str">"age"</span>);
+field.set(obj, <span class="num">30</span>);
+
+<span class="cm">// 获取私有字段</span>
+<span class="tp">Field</span> privateField = clazz.getDeclaredField(<span class="str">"password"</span>);
+privateField.setAccessible(<span class="kw">true</span>);
+<span class="tp">String</span> value = (<span class="tp">String</span>) privateField.get(obj);</code></pre>
+                    </div>
+                    <h3>六、反射的应用场景与注意事项</h3>
+                    <ul>
+                        <li><strong>框架开发</strong>：Spring、MyBatis 等框架大量使用反射实现依赖注入、ORM 映射。</li>
+                        <li><strong>注解处理</strong>：运行时读取注解信息并执行相应逻辑。</li>
+                        <li><strong>动态代理</strong>：JDK 动态代理依赖反射机制。</li>
+                        <li>⚠️ <strong>性能开销</strong>：反射比直接调用慢，频繁使用时注意缓存 Class/Method 对象。</li>
+                        <li>⚠️ <strong>安全限制</strong>：反射可能破坏封装性，需谨慎使用 <code>setAccessible(true)</code>。</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'file-copy',
+                title: '文件复制：字符缓冲流与字节缓冲流',
+                date: '2026-04-22',
+                content: `
+                    <h3>一、Java I/O 流概述</h3>
+                    <p>Java 的 I/O 操作基于<strong>流（Stream）</strong>的概念。按处理单位分为：</p>
+                    <ul>
+                        <li><strong>字节流</strong>（InputStream / OutputStream）：以字节为单位，适合处理任意类型文件（图片、视频、音频等）。</li>
+                        <li><strong>字符流</strong>（Reader / Writer）：以字符为单位，适合处理文本文件（.txt、.java、.html 等）。</li>
+                    </ul>
+                    <p>使用<strong>缓冲流</strong>可以显著提升读写效率，减少磁盘 I/O 次数。</p>
+                    <h3>二、文本文件复制（字符缓冲流）</h3>
+                    <p>使用 <code>BufferedReader</code> 和 <code>BufferedWriter</code> 进行文本文件的逐行复制。</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>TextFileCopy.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="kw">import</span> java.io.*;
+
+<span class="kw">public class</span> <span class="tp">TextFileCopy</span> {
+    <span class="kw">public static void</span> <span class="tp">copyTextFile</span>(<span class="tp">String</span> sourcePath, <span class="tp">String</span> targetPath) {
+        <span class="cm">// try-with-resources 自动关闭流（JDK 7+）</span>
+        <span class="kw">try</span> (
+            <span class="tp">BufferedReader</span> reader = <span class="kw">new</span> <span class="tp">BufferedReader</span>(
+                <span class="kw">new</span> <span class="tp">FileReader</span>(sourcePath));
+            <span class="tp">BufferedWriter</span> writer = <span class="kw">new</span> <span class="tp">BufferedWriter</span>(
+                <span class="kw">new</span> <span class="tp">FileWriter</span>(targetPath))
+        ) {
+            <span class="tp">String</span> line;
+            <span class="kw">while</span> ((line = reader.readLine()) != <span class="kw">null</span>) {
+                writer.write(line);
+                writer.newLine();  <span class="cm">// 写入换行符</span>
+            }
+            writer.flush();       <span class="cm">// 确保缓冲数据全部写入</span>
+            <span class="tp">System</span>.out.println(<span class="str">"文本文件复制完成！"</span>);
+        } <span class="kw">catch</span> (<span class="tp">IOException</span> e) {
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                    </div>
+                    <h3>三、任意文件复制（字节缓冲流）</h3>
+                    <p>使用 <code>BufferedInputStream</code> 和 <code>BufferedOutputStream</code> 复制任意类型文件。</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>AnyFileCopy.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="kw">import</span> java.io.*;
+
+<span class="kw">public class</span> <span class="tp">AnyFileCopy</span> {
+    <span class="kw">public static void</span> <span class="tp">copyFile</span>(<span class="tp">String</span> sourcePath, <span class="tp">String</span> targetPath) {
+        <span class="kw">try</span> (
+            <span class="tp">BufferedInputStream</span> bis = <span class="kw">new</span> <span class="tp">BufferedInputStream</span>(
+                <span class="kw">new</span> <span class="tp">FileInputStream</span>(sourcePath));
+            <span class="tp">BufferedOutputStream</span> bos = <span class="kw">new</span> <span class="tp">BufferedOutputStream</span>(
+                <span class="kw">new</span> <span class="tp">FileOutputStream</span>(targetPath))
+        ) {
+            <span class="kw">byte</span>[] buffer = <span class="kw">new byte</span>[<span class="num">8192</span>]; <span class="cm">// 8KB 缓冲区</span>
+            <span class="kw">int</span> bytesRead;
+            <span class="kw">while</span> ((bytesRead = bis.read(buffer)) != -<span class="num">1</span>) {
+                bos.write(buffer, <span class="num">0</span>, bytesRead);
+            }
+            bos.flush();
+            <span class="tp">System</span>.out.println(<span class="str">"文件复制完成！"</span>);
+        } <span class="kw">catch</span> (<span class="tp">IOException</span> e) {
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                    </div>
+                    <h3>四、两种流的对比</h3>
+                    <table style="width:100%;border-collapse:collapse;margin:1rem 0;">
+                        <tr style="background:var(--accent-light);">
+                            <th style="padding:0.5rem;border:1px solid var(--border);text-align:left;">特性</th>
+                            <th style="padding:0.5rem;border:1px solid var(--border);text-align:left;">字符缓冲流</th>
+                            <th style="padding:0.5rem;border:1px solid var(--border);text-align:left;">字节缓冲流</th>
+                        </tr>
+                        <tr>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">核心类</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">BufferedReader / BufferedWriter</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">BufferedInputStream / BufferedOutputStream</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">处理单位</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">字符（char）</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">字节（byte）</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">适用场景</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">纯文本文件（.txt、.java）</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">任意文件（图片、视频等）</td>
+                        </tr>
+                    </table>
+                `
+            },
+            {
+                id: 'anonymous-class',
+                title: '匿名内部类的使用场景',
+                date: '2026-05-10',
+                content: `
+                    <h3>一、匿名内部类概述</h3>
+                    <p><strong>匿名内部类</strong>是没有名称的内部类，它允许在<strong>创建对象的同时定义类的实现</strong>。匿名内部类必须继承一个父类或实现一个接口，且只能使用一次。</p>
+                    <h3>二、场景一：接口回调</h3>
+                    <p>当需要传递一个接口的实现作为参数时，使用匿名内部类可以避免单独创建实现类。</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>接口回调示例</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="kw">interface</span> <span class="tp">Callback</span> {
+    <span class="kw">void</span> <span class="tp">onSuccess</span>(<span class="tp">String</span> result);
+    <span class="kw">void</span> <span class="tp">onError</span>(<span class="tp">Exception</span> e);
+}
+
+<span class="kw">public void</span> <span class="tp">fetchData</span>(<span class="tp">Callback</span> callback) {
+    <span class="cm">// 模拟异步操作</span>
+    <span class="kw">new</span> <span class="tp">Thread</span>(() -&gt; {
+        <span class="kw">try</span> {
+            <span class="tp">Thread</span>.sleep(<span class="num">1000</span>);
+            callback.onSuccess(<span class="str">"数据获取成功"</span>);
+        } <span class="kw">catch</span> (<span class="tp">Exception</span> e) {
+            callback.onError(e);
+        }
+    }).start();
+}
+
+<span class="cm">// 使用匿名内部类传递回调</span>
+fetchData(<span class="kw">new</span> <span class="tp">Callback</span>() {
+    <span class="kw">public void</span> <span class="tp">onSuccess</span>(<span class="tp">String</span> result) {
+        <span class="tp">System</span>.out.println(<span class="str">"成功："</span> + result);
+    }
+    <span class="kw">public void</span> <span class="tp">onError</span>(<span class="tp">Exception</span> e) {
+        <span class="tp">System</span>.out.println(<span class="str">"失败："</span> + e.getMessage());
+    }
+});</code></pre>
+                    </div>
+                    <h3>三、场景二：事件监听（GUI 开发）</h3>
+                    <p>在 Swing / JavaFX 等 GUI 开发中，匿名内部类常用于绑定按钮点击等事件。</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>事件监听示例</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="kw">import</span> javax.swing.*;
+
+<span class="tp">JButton</span> button = <span class="kw">new</span> <span class="tp">JButton</span>(<span class="str">"点击我"</span>);
+button.addActionListener(<span class="kw">new</span> <span class="tp">ActionListener</span>() {
+    <span class="kw">public void</span> <span class="tp">actionPerformed</span>(<span class="tp">ActionEvent</span> e) {
+        <span class="tp">System</span>.out.println(<span class="str">"按钮被点击了！"</span>);
+    }
+});
+
+<span class="cm">// JDK 8+ 可使用 Lambda 表达式简化</span>
+button.addActionListener(e -&gt; <span class="tp">System</span>.out.println(<span class="str">"按钮被点击了！"</span>));</code></pre>
+                    </div>
+                    <h3>四、场景三：线程创建</h3>
+                    <p>快速创建一个临时的线程执行任务。</p>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>线程创建示例</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="cm">// 使用匿名内部类创建线程</span>
+<span class="tp">Thread</span> thread = <span class="kw">new</span> <span class="tp">Thread</span>(<span class="kw">new</span> <span class="tp">Runnable</span>() {
+    <span class="kw">public void</span> <span class="tp">run</span>() {
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= <span class="num">5</span>; i++) {
+            <span class="tp">System</span>.out.println(<span class="str">"线程执行第 "</span> + i + <span class="str">" 次"</span>);
+            <span class="kw">try</span> { <span class="tp">Thread</span>.sleep(<span class="num">500</span>); } <span class="kw">catch</span> (<span class="tp">InterruptedException</span> e) {}
+        }
+    }
+});
+thread.start();
+
+<span class="cm">// JDK 8+ 可使用 Lambda 表达式简化</span>
+<span class="kw">new</span> <span class="tp">Thread</span>(() -&gt; {
+    <span class="tp">System</span>.out.println(<span class="str">"Lambda 线程运行中..."</span>);
+}).start();</code></pre>
+                    </div>
+                    <h3>五、匿名内部类 vs Lambda 表达式</h3>
+                    <ul>
+                        <li><strong>Lambda 表达式</strong>（JDK 8+）是匿名内部类的简化形式，但仅适用于<strong>函数式接口</strong>（只有一个抽象方法的接口）。</li>
+                        <li><strong>匿名内部类</strong>可以实现包含多个方法的接口或抽象类，功能更灵活。</li>
+                        <li>Lambda 表达式不会生成单独的 .class 文件，性能更优。</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'formal-methods',
+                title: '形式化方法与《大象——Thinking in UML》导读',
+                date: '2026-05-25',
+                content: `
+                    <h3>一、什么是形式化方法</h3>
+                    <p><strong>形式化方法（Formal Methods）</strong>是一种基于<strong>严格数学理论</strong>的软件开发方法。它使用形式化规约语言（如 Z 语言、VDM、B 方法等）对软件系统进行精确描述，并通过<strong>数学推理和证明</strong>来验证系统是否满足需求规约。</p>
+                    <p>与传统的测试方法不同，形式化方法追求的是<strong>数学上的正确性保证</strong>——类似于数学定理的证明，而非通过有限的测试用例来"猜测"程序的正确性。</p>
+                    <h3>二、形式化方法的核心要素</h3>
+                    <ul>
+                        <li><strong>形式化规约（Formal Specification）</strong>：使用数学语言（一阶逻辑、集合论、时序逻辑等）精确描述系统"应该做什么"。</li>
+                        <li><strong>形式化验证（Formal Verification）</strong>：通过模型检测（Model Checking）或定理证明（Theorem Proving）验证系统实现是否满足规约。</li>
+                        <li><strong>形式化合成（Formal Synthesis）</strong>：从形式化规约自动生成可执行的程序代码（如 B 方法的代码精化）。</li>
+                    </ul>
+                    <h3>三、为什么需要形式化方法</h3>
+                    <p>在<strong>安全关键系统</strong>（如航空航天、医疗设备、自动驾驶、金融交易）中，软件错误可能导致灾难性后果。传统的测试方法只能发现 bug 的存在，无法证明 bug 的不存在。形式化方法可以提供"系统在所有可能情况下都满足规约"的数学保证。</p>
+                    <p><strong>典型应用案例</strong>：巴黎地铁 14 号线（Météor）的自动控制系统使用了 B 方法进行形式化开发，在十万行代码中未发现任何运行时错误。</p>
+                    <h3>四、《大象——Thinking in UML》推荐</h3>
+                    <p><strong>《大象——Thinking in UML》</strong>（作者：谭云杰）是一本经典的 UML 建模书籍，出版于 2012 年，至今仍是国内 UML 学习的必读书目。</p>
+                    <ul>
+                        <li><strong>书名寓意</strong>："大象"是对 UML 庞大体系的形象比喻。UML（统一建模语言）包含用例图、类图、顺序图、状态图、活动图等十余种图，初学者往往感觉"盲人摸象"，难以把握全貌。</li>
+                        <li><strong>核心思想</strong>：本书强调<strong>面向对象的思维方式</strong>和<strong>建模的思想</strong>，而非简单罗列 UML 语法。作者倡导"Thinking in UML"，即用 UML 的视角去分析和设计软件，培养面向对象的抽象能力。</li>
+                        <li><strong>主要内容</strong>：涵盖业务建模、需求分析、系统分析、系统设计全流程，结合实际案例讲解如何使用 UML 进行软件建模。</li>
+                        <li><strong>推荐理由</strong>：对于 Java 学习者而言，UML 是<strong>设计模式</strong>、<strong>系统架构</strong>和<strong>团队协作</strong>的基础工具。理解 UML 有助于阅读开源框架源码、编写清晰的设计文档。</li>
+                    </ul>
+                    <h3>五、形式化方法与 UML 的关系</h3>
+                    <p>UML 属于<strong>半形式化方法</strong>：它使用图形化的方式描述系统，比纯文字更精确，但不像 Z 语言或 B 方法那样可以进行严格的数学证明。在实际工程中，通常是：</p>
+                    <ol>
+                        <li>先使用 <strong>UML</strong> 进行需求分析和系统建模（沟通效率高）</li>
+                        <li>对核心关键模块，使用<strong>形式化方法</strong>进行严格验证（安全性保证）</li>
+                        <li>最后用 <strong>Java</strong> 等编程语言实现（工程落地）</li>
+                    </ol>
+                    <p>这种多层次的分析与设计方法，正是优秀软件工程师应当具备的核心素养。</p>
+                `
+            }
+        ];
+
+        /* ========== DOM 引用 ========== */
+        const homePage = document.getElementById('homePage');
+        const detailPage = document.getElementById('detailPage');
+        const noteList = document.getElementById('noteList');
+        const logoBtn = document.getElementById('logoBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const backToTop = document.getElementById('backToTop');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const clockDisplay = document.getElementById('clockDisplay');
+        const calTitle = document.getElementById('calTitle');
+        const calPrev = document.getElementById('calPrev');
+        const calNext = document.getElementById('calNext');
+        const calendarGrid = document.getElementById('calendarGrid');
+        const calendarToggle = document.getElementById('calendarToggle');
+
+        /* ========== 初始化笔记列表 ========== */
+        function renderNoteList() {
+            noteList.innerHTML = blogPosts.map(function(post) {
+                return '<li class="note-item" data-id="' + post.id + '">' +
+                    '<span class="note-title">' + post.title + '</span>' +
+                    '<span class="note-date">' + post.date + '</span>' +
+                    '</li>';
+            }).join('');
+
+            var items = noteList.querySelectorAll('.note-item');
+            items.forEach(function(item) {
+                item.addEventListener('click', function() {
+                    var postId = this.getAttribute('data-id');
+                    showDetail(postId);
+                });
+            });
+        }
+
+        /* ========== 显示笔记详情 ========== */
+        function showDetail(postId) {
+            var post = blogPosts.find(function(p) { return p.id === postId; });
+            if (!post) return;
+
+            homePage.classList.add('hidden');
+            detailPage.classList.add('active');
+            detailPage.innerHTML =
+                '<span class="back-link" id="backLink">← 返回笔记列表</span>' +
+                '<div class="detail-header">' +
+                    '<h1 class="detail-title">' + post.title + '</h1>' +
+                    '<span class="detail-date">📅 发布日期：' + post.date + '</span>' +
+                '</div>' +
+                '<div class="detail-body">' + post.content + '</div>';
+
+            document.getElementById('backLink').addEventListener('click', showHome);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (window.innerWidth <= 768) {
+                closeSidebar();
+            }
+        }
+
+        /* ========== 返回首页 ========== */
+        function showHome() {
+            detailPage.classList.remove('active');
+            detailPage.innerHTML = '';
+            homePage.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        logoBtn.addEventListener('click', showHome);
+
+        /* ========== 代码复制功能 ========== */
+        function copyCode(btn) {
+            var pre = btn.closest('.code-block-wrapper').querySelector('pre');
+            var code = pre.textContent || pre.innerText || '';
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(function() {
+                    showCopySuccess(btn);
+                });
+            } else {
+                var textarea = document.createElement('textarea');
+                textarea.value = code;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showCopySuccess(btn);
+            }
+        }
+
+        function showCopySuccess(btn) {
+            var original = btn.textContent;
+            btn.textContent = '✅ 已复制';
+            btn.classList.add('copied');
+            setTimeout(function() {
+                btn.textContent = original;
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+
+        /* ========== 昼夜模式切换 ========== */
+        function applyTheme(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark');
+                themeToggle.textContent = '☀️';
+                themeToggle.title = '切换日间模式';
+                localStorage.setItem('blog-theme', 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                themeToggle.textContent = '🌙';
+                themeToggle.title = '切换夜间模式';
+                localStorage.setItem('blog-theme', 'light');
+            }
+        }
+
+        var savedTheme = localStorage.getItem('blog-theme');
+        if (savedTheme === 'dark') {
+            applyTheme(true);
+        } else if (savedTheme === 'light') {
+            applyTheme(false);
+        } else {
+            applyTheme(false);
+        }
+
+        themeToggle.addEventListener('click', function() {
+            applyTheme(!document.body.classList.contains('dark'));
+        });
+
+        /* ========== 移动端侧边栏 ========== */
+        function openSidebar() {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        menuToggle.addEventListener('click', function() {
+            if (sidebar.classList.contains('open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        /* ========== 回到顶部按钮 ========== */
+        function updateBackToTop() {
+            if (window.scrollY > 400) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        }
+
+        window.addEventListener('scroll', updateBackToTop, { passive: true });
+
+        backToTop.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        /* ========== 实时时钟 ========== */
+        function updateClock() {
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = String(now.getMonth() + 1).padStart(2, '0');
+            var day = String(now.getDate()).padStart(2, '0');
+            var weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            var week = weekDays[now.getDay()];
+            var hours = String(now.getHours()).padStart(2, '0');
+            var minutes = String(now.getMinutes()).padStart(2, '0');
+            var seconds = String(now.getSeconds()).padStart(2, '0');
+
+            clockDisplay.textContent =
+                year + '-' + month + '-' + day + ' 星期' + week + ' ' +
+                hours + ':' + minutes + ':' + seconds;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        /* =================================================================
+         *  农历（旧历）转换模块
+         *  基于 1900-2100 年农历数据，实现公历 ↔ 农历互转
+         * ================================================================= */
+
+        /*
+         * lunarInfo 数组编码说明（每个元素对应 1900 + index 年）：
+         *   低 4 位 (bits 0-3)：闰月月份（0 表示无闰月）
+         *   高 12 位 (bits 4-15)：从正月到腊月共 12 个月，1=30 天，0=29 天
+         *   若存在闰月，闰月天数由闰月后一个月的天数决定（大小月交替规律）
+         *
+         *   简化计算：闰月天数 = (lunarInfo[y] & 0x10000) ? 30 : 29
+         *   月份天数 = (lunarInfo[y] & (0x10000 >> m)) ? 30 : 29
+         */
+
+        var lunarInfo = [
+            0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
+            0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
+            0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,
+            0x06566, 0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950,
+            0x0d4a0, 0x1d8a6, 0x0b550, 0x056a0, 0x1a5b4, 0x025d0, 0x092d0, 0x0d2b2, 0x0a950, 0x0b557,
+            0x06ca0, 0x0b550, 0x15355, 0x04da0, 0x0a5b0, 0x14573, 0x052b0, 0x0a9a8, 0x0e950, 0x06aa0,
+            0x0aea6, 0x0ab50, 0x04b60, 0x0aae4, 0x0a570, 0x05260, 0x0f263, 0x0d950, 0x05b57, 0x056a0,
+            0x096d0, 0x04dd5, 0x04ad0, 0x0a4d0, 0x0d4d4, 0x0d250, 0x0d558, 0x0b540, 0x0b6a0, 0x195a6,
+            0x095b0, 0x049b0, 0x0a974, 0x0a4b0, 0x0b27a, 0x06a50, 0x06d40, 0x0af46, 0x0ab60, 0x09570,
+            0x04af5, 0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x05ac0, 0x0ab60, 0x096d5, 0x092e0,
+            0x0c960, 0x0d954, 0x0d4a0, 0x0da50, 0x07552, 0x056a0, 0x0abb7, 0x025d0, 0x092d0, 0x0cab5,
+            0x0a950, 0x0b4a0, 0x0baa4, 0x0ad50, 0x055d9, 0x04ba0, 0x0a5b0, 0x15176, 0x052b0, 0x0a930,
+            0x07954, 0x06aa0, 0x0ad50, 0x05b52, 0x04b60, 0x0a6e6, 0x0a4e0, 0x0d260, 0x0ea65, 0x0d530,
+            0x05aa0, 0x076a3, 0x096d0, 0x04afb, 0x04ad0, 0x0a4d0, 0x1d0b6, 0x0d250, 0x0d520, 0x0dd45,
+            0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0,
+            0x14b63, 0x09370, 0x049f8, 0x04970, 0x064b0, 0x168a6, 0x0ea50, 0x06aa0, 0x1a6c4, 0x0aae0,
+            0x092e0, 0x0d2e3, 0x0c960, 0x0d557, 0x0d4a0, 0x0da50, 0x05d55, 0x056a0, 0x0a6d0, 0x055d4,
+            0x052d0, 0x0a9b8, 0x0a950, 0x0b4a0, 0x0b6a6, 0x0ad50, 0x055a0, 0x0aba4, 0x0a5b0, 0x052b0,
+            0x0b273, 0x06930, 0x07337, 0x06aa0, 0x0ad50, 0x14b55, 0x04b60, 0x0a570, 0x054e4, 0x0d160,
+            0x0e968, 0x0d520, 0x0daa0, 0x16aa6, 0x056d0, 0x04ae0, 0x0a9d4, 0x0a4d0, 0x0d150, 0x0f252,
+            0x0d520
+        ];
+
+        var lunarMonths = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊'];
+        var lunarDays = [
+            '初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
+            '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
+            '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'
+        ];
+
+        function leapMonth(year) {
+            var info = lunarInfo[year - 1900];
+            return info & 0xf;
+        }
+
+        function leapDays(year) {
+            if (leapMonth(year)) {
+                return (lunarInfo[year - 1900] & 0x10000) ? 30 : 29;
+            }
+            return 0;
+        }
+
+        function monthDays(year, month) {
+            var info = lunarInfo[year - 1900];
+            return (info & (0x10000 >> month)) ? 30 : 29;
+        }
+
+        function lunarYearDays(year) {
+            var sum = 0;
+            for (var i = 1; i <= 12; i++) {
+                sum += monthDays(year, i);
+            }
+            sum += leapDays(year);
+            return sum;
+        }
+
+        function solarToLunar(year, month, day) {
+            var baseYear = 1900;
+            var baseMonth = 1;
+            var baseDay = 31;
+
+            var offset = 0;
+            var i;
+            for (i = baseYear; i < year; i++) {
+                offset += (isLeapYear(i) ? 366 : 365);
+            }
+            for (i = 1; i < month; i++) {
+                offset += solarMonthDays(year, i);
+            }
+            offset += day - baseDay;
+
+            var lunarYear, lunarMonth, lunarDay;
+            var isLeap = false;
+
+            for (lunarYear = baseYear; lunarYear <= 2100 && offset > 0; lunarYear++) {
+                var daysInYear = lunarYearDays(lunarYear);
+                if (offset < daysInYear) break;
+                offset -= daysInYear;
+            }
+
+            var lm = leapMonth(lunarYear);
+            var isLeapMonth = false;
+
+            for (lunarMonth = 1; lunarMonth <= 12 && offset > 0; lunarMonth++) {
+                if (lm > 0 && lunarMonth === lm + 1 && !isLeapMonth) {
+                    isLeapMonth = true;
+                    lunarMonth--;
+                    var ld = leapDays(lunarYear);
+                    if (offset < ld) break;
+                    offset -= ld;
+                    isLeapMonth = false;
+                }
+                var md = monthDays(lunarYear, lunarMonth);
+                if (offset < md) break;
+                offset -= md;
+            }
+
+            lunarDay = offset + 1;
+
+            return {
+                year: lunarYear,
+                month: lunarMonth,
+                day: lunarDay,
+                isLeap: (lm > 0 && lm + 1 === lunarMonth)
+            };
+        }
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function solarMonthDays(year, month) {
+            var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            if (month === 2 && isLeapYear(year)) return 29;
+            return daysInMonth[month - 1];
+        }
+
+        /* ========== 日历模块 ========== */
+        var calYear, calMonth;
+        var showLunar = false;
+
+        var nowDate = new Date();
+        calYear = nowDate.getFullYear();
+        calMonth = nowDate.getMonth() + 1;
+
+        function renderCalendar() {
+            calTitle.textContent = calYear + '年' + calMonth + '月';
+
+            var firstDay = new Date(calYear, calMonth - 1, 1).getDay();
+            var totalDays = solarMonthDays(calYear, calMonth);
+
+            var html = '';
+            var weekHeaders = ['日', '一', '二', '三', '四', '五', '六'];
+            weekHeaders.forEach(function(w) {
+                html += '<div class="day-header">' + w + '</div>';
+            });
+
+            for (var i = 0; i < firstDay; i++) {
+                html += '<div class="day-cell empty"></div>';
+            }
+
+            var todayYear = nowDate.getFullYear();
+            var todayMonth = nowDate.getMonth() + 1;
+            var todayDay = nowDate.getDate();
+
+            for (var d = 1; d <= totalDays; d++) {
+                var cls = 'day-cell';
+                if (d === todayDay && calYear === todayYear && calMonth === todayMonth) {
+                    cls += ' today';
+                }
+
+                var lunarText = '';
+                if (showLunar) {
+                    var lunar = solarToLunar(calYear, calMonth, d);
+                    if (lunar.day === 1) {
+                        lunarText = (lunar.isLeap ? '闰' : '') + lunarMonths[lunar.month - 1] + '月';
+                    } else {
+                        lunarText = lunarDays[lunar.day - 1];
+                    }
+                    html += '<div class="' + cls + '">' + d + '<span class="lunar-text">' + lunarText + '</span></div>';
+                } else {
+                    html += '<div class="' + cls + '">' + d + '</div>';
+                }
+            }
+
+            calendarGrid.innerHTML = html;
+        }
+
+        calPrev.addEventListener('click', function() {
+            if (calMonth === 1) {
+                calYear--;
+                calMonth = 12;
+            } else {
+                calMonth--;
+            }
+            renderCalendar();
+        });
+
+        calNext.addEventListener('click', function() {
+            if (calMonth === 12) {
+                calYear++;
+                calMonth = 1;
+            } else {
+                calMonth++;
+            }
+            renderCalendar();
+        });
+
+        calendarToggle.addEventListener('click', function() {
+            showLunar = !showLunar;
+            calendarToggle.textContent = showLunar ? '切换为公历' : '切换为农历';
+            renderCalendar();
+        });
+
+        /* ========== 初始化 ========== */
+        renderNoteList();
+        renderCalendar();
+        updateBackToTop();
+
+        /* ========== 键盘 ESC 关闭侧边栏 ========== */
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+                closeSidebar();
+            }
+        });
+
+        /* ========== 窗口大小变化时处理侧边栏 ========== */
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768 && sidebar.classList.contains('open')) {
+                closeSidebar();
+            }
+        });
+    </script>
+</body>
+</html>
