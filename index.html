@@ -560,26 +560,12 @@
         }
 
         /* 语法高亮 */
-        .kw {
-            color: var(--code-keyword);
-            font-weight: 600;
-        }
-        .str {
-            color: var(--code-string);
-        }
-        .cm {
-            color: var(--code-comment);
-            font-style: italic;
-        }
-        .num {
-            color: var(--code-number);
-        }
-        .tp {
-            color: var(--code-type);
-        }
-        .an {
-            color: var(--code-annotation);
-        }
+        .kw { color: var(--code-keyword); font-weight: 600; }
+        .str { color: var(--code-string); }
+        .cm { color: var(--code-comment); font-style: italic; }
+        .num { color: var(--code-number); }
+        .tp { color: var(--code-type); }
+        .an { color: var(--code-annotation); }
 
         /* 首页隐藏 */
         .home-page {
@@ -835,15 +821,13 @@
 
         /* ========== 博文数据 ========== */
         const blogPosts = [
-            /*
-            // ========== 以下博文已被注释掉 ==========
             {
                 id: 'hello-world',
                 title: 'Java 第一课：Hello World',
                 date: '2026-02-15',
                 content: `
                     <h3>一、Java 简介</h3>
-                    <p>Java 是一门<strong>面向对象</strong>的编程语言，由 Sun Microsystems（现已被 Oracle 收购）于 1995 年发布。Java 具有<strong>跨平台</strong>特性——"一次编写，到处运行"（Write Once, Run Anywhere），这得益于 Java 虚拟机（JVM）的设计。</p>
+                    <p>Java 是一门<strong>面向对象</strong>的编程语言，由 Sun Microsystems（现已被 Oracle 收购）于 1995 年发布。Java 具有<strong>跨平台</strong>特性——“一次编写，到处运行”（Write Once, Run Anywhere），这得益于 Java 虚拟机（JVM）的设计。</p>
                     <p>Java 广泛应用于企业级开发、Android 应用开发、大数据处理等领域，是学习编程的绝佳入门语言之一。</p>
                     <h3>二、环境准备</h3>
                     <p>要运行 Java 程序，需要安装 <strong>JDK</strong>（Java Development Kit）。推荐使用 JDK 17 或更高版本的 LTS（长期支持）版本。</p>
@@ -860,16 +844,16 @@
                             <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
                         </div>
                         <pre><code><span class="cm">/**</span>
-        <span class="cm"> * 第一个 Java 程序：Hello World</span>
-        <span class="cm"> * 这是一个多行注释（文档注释）</span>
-        <span class="cm"> */</span>
-        <span class="kw">public class</span> <span class="tp">HelloWorld</span> {
-            <span class="cm">// main 方法是 Java 程序的入口点（单行注释）</span>
-            <span class="kw">public static void</span> <span class="tp">main</span>(<span class="tp">String</span>[] args) {
-                <span class="cm">/* 向控制台输出一段文字（多行注释） */</span>
-                <span class="tp">System</span>.out.println(<span class="str">"Hello, World!"</span>);
-            }
-        }</code></pre>
+<span class="cm"> * 第一个 Java 程序：Hello World</span>
+<span class="cm"> * 这是一个多行注释（文档注释）</span>
+<span class="cm"> */</span>
+<span class="kw">public class</span> <span class="tp">HelloWorld</span> {
+    <span class="cm">// main 方法是 Java 程序的入口点（单行注释）</span>
+    <span class="kw">public static void</span> <span class="tp">main</span>(<span class="tp">String</span>[] args) {
+        <span class="cm">/* 向控制台输出一段文字（多行注释） */</span>
+        <span class="tp">System</span>.out.println(<span class="str">"Hello, World!"</span>);
+    }
+}</code></pre>
                     </div>
                     <h3>四、代码解析</h3>
                     <ul>
@@ -884,18 +868,16 @@
                             <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
                         </div>
                         <pre><code><span class="cm"># 编译 Java 源文件，生成 HelloWorld.class 字节码文件</span>
-        javac HelloWorld.java
+javac HelloWorld.java
 
-        <span class="cm"># 运行 Java 程序</span>
-        java HelloWorld
+<span class="cm"># 运行 Java 程序</span>
+java HelloWorld
 
-        <span class="cm"># 输出结果：</span>
-        <span class="str">Hello, World!</span></code></pre>
+<span class="cm"># 输出结果：</span>
+<span class="str">Hello, World!</span></code></pre>
                     </div>
                 `
             },
-            // ========== 以上博文已被注释掉 ==========
-            */
             {
                 id: 'enum-usecase',
                 title: '枚举类型的应用场景',
@@ -1425,8 +1407,8 @@ thread.start();
             detailPage.innerHTML =
                 '<span class="back-link" id="backLink">← 返回笔记列表</span>' +
                 '<div class="detail-header">' +
-                '<h1 class="detail-title">' + post.title + '</h1>' +
-                '<span class="detail-date">📅 发布日期：' + post.date + '</span>' +
+                    '<h1 class="detail-title">' + post.title + '</h1>' +
+                    '<span class="detail-date">📅 发布日期：' + post.date + '</span>' +
                 '</div>' +
                 '<div class="detail-body">' + post.content + '</div>';
 
