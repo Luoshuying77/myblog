@@ -1303,6 +1303,130 @@ thread.start();
                     <p>这种多层次的分析与设计方法，正是优秀软件工程师应当具备的核心素养。</p>
                 `
             }
+        {
+                id: 'thread-create-diff',
+                title: 'Thread 子类 vs Runnable 接口创建线程的区别',
+                date: '2026-06-23',
+                content: `
+                    <h3>一、Java 中创建线程的两种方式</h3>
+                    <p>Java 提供了两种基本的线程创建方式：</p>
+                    <ol>
+                        <li><strong>继承 Thread 类</strong>：定义一个 Thread 的子类，重写 <code>run()</code> 方法。</li>
+                        <li><strong>实现 Runnable 接口</strong>：定义一个实现 <code>Runnable</code> 接口的类，将其实例传入 <code>Thread</code> 构造方法。</li>
+                    </ol>
+                    <h3>二、方式一：继承 Thread 类</h3>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>MyThread.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="cm">// 继承 Thread 类，重写 run() 方法</span>
+<span class="kw">class</span> <span class="tp">MyThread</span> <span class="kw">extends</span> <span class="tp">Thread</span> {
+    <span class="kw">private</span> <span class="tp">String</span> name;
+
+    <span class="kw">public</span> <span class="tp">MyThread</span>(<span class="tp">String</span> name) {
+        <span class="kw">this</span>.name = name;
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="tp">run</span>() {
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= <span class="num">3</span>; i++) {
+            <span class="tp">System</span>.out.println(name + <span class="str">" 执行第 "</span> + i + <span class="str">" 次"</span>);
+        }
+    }
+}
+
+<span class="cm">// 使用：直接创建子类对象并 start</span>
+<span class="kw">public class</span> <span class="tp">Test</span> {
+    <span class="kw">public static void</span> <span class="tp">main</span>(<span class="tp">String</span>[] args) {
+        <span class="tp">MyThread</span> t1 = <span class="kw">new</span> <span class="tp">MyThread</span>(<span class="str">"线程A"</span>);
+        <span class="tp">MyThread</span> t2 = <span class="kw">new</span> <span class="tp">MyThread</span>(<span class="str">"线程B"</span>);
+        t1.start();
+        t2.start();
+    }
+}</code></pre>
+                    </div>
+                    <h3>三、方式二：实现 Runnable 接口</h3>
+                    <div class="code-block-wrapper">
+                        <div class="code-block-header">
+                            <span>MyRunnable.java</span>
+                            <button class="copy-btn" onclick="copyCode(this)">📋 复制</button>
+                        </div>
+                        <pre><code><span class="cm">// 实现 Runnable 接口，重写 run() 方法</span>
+<span class="kw">class</span> <span class="tp">MyRunnable</span> <span class="kw">implements</span> <span class="tp">Runnable</span> {
+    <span class="kw">private</span> <span class="tp">String</span> name;
+
+    <span class="kw">public</span> <span class="tp">MyRunnable</span>(<span class="tp">String</span> name) {
+        <span class="kw">this</span>.name = name;
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="tp">run</span>() {
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= <span class="num">3</span>; i++) {
+            <span class="tp">System</span>.out.println(name + <span class="str">" 执行第 "</span> + i + <span class="str">" 次"</span>);
+        }
+    }
+}
+
+<span class="cm">// 使用：将 Runnable 实例传入 Thread 构造方法</span>
+<span class="kw">public class</span> <span class="tp">Test</span> {
+    <span class="kw">public static void</span> <span class="tp">main</span>(<span class="tp">String</span>[] args) {
+        <span class="tp">MyRunnable</span> task = <span class="kw">new</span> <span class="tp">MyRunnable</span>(<span class="str">"任务"</span>);
+        <span class="tp">Thread</span> t1 = <span class="kw">new</span> <span class="tp">Thread</span>(task, <span class="str">"线程A"</span>);
+        <span class="tp">Thread</span> t2 = <span class="kw">new</span> <span class="tp">Thread</span>(task, <span class="str">"线程B"</span>);
+        t1.start();
+        t2.start();
+    }
+}
+
+<span class="cm">// JDK 8+ 可用 Lambda 进一步简化</span>
+<span class="kw">new</span> <span class="tp">Thread</span>(() -&gt; {
+    <span class="tp">System</span>.out.println(<span class="str">"Lambda 线程运行中..."</span>);
+}).start();</code></pre>
+                    </div>
+                    <h3>四、核心区别对比</h3>
+                    <table style="width:100%;border-collapse:collapse;margin:1rem 0;">
+                        <tr style="background:var(--accent-light);">
+                            <th style="padding:0.5rem;border:1px solid var(--border);text-align:left;">对比维度</th>
+                            <th style="padding:0.5rem;border:1px solid var(--border);text-align:left;">继承 Thread 类</th>
+                            <th style="padding:0.5rem;border:1px solid var(--border);text-align:left;">实现 Runnable 接口</th>
+                        </tr>
+                        <tr>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">本质</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">线程本身（is-a 关系）</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">线程任务（has-a 关系）</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">继承限制</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">❌ 不能再继承其他类</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">✅ 还可继承其他类</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">资源共享</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">每个线程独立对象，不共享</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">多个线程可共享同一 Runnable</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">耦合度</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">任务与线程紧耦合</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">任务与线程解耦，分离关注点</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">线程池兼容</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">❌ 不兼容（必须传入 Runnable）</td>
+                            <td style="padding:0.5rem;border:1px solid var(--border);">✅ 可直接提交给线程池</td>
+                        </tr>
+                    </table>
+                    <h3>五、设计原则：推荐使用 Runnable</h3>
+                    <ul>
+                        <li><strong>单一职责原则</strong>：Runnable 只负责定义"任务"，Thread 负责"执行"，职责分离更清晰。</li>
+                        <li><strong>资源节约</strong>：一个 Runnable 实例可被多个 Thread 共享，避免重复创建对象。</li>
+                        <li><strong>扩展性好</strong>：不占用单继承额度，类可以同时继承业务父类和实现 Runnable。</li>
+                        <li><strong>线程池适用</strong>：<code>ExecutorService</code> 只接受 <code>Runnable</code>（或 <code>Callable</code>），无法直接使用 Thread 子类。</li>
+                    </ul>
+                    <p>在实际开发中，<strong>实现 Runnable 接口（或使用 Lambda / Callable）是主流选择</strong>，继承 Thread 类仅在学习阶段或特殊场景下使用。</p>
+                `
+            }
         ];
 
         /* ========== DOM 引用 ========== */
